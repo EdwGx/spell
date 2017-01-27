@@ -136,7 +136,7 @@ func process(sentence: String) {
             let end = sentence.index(start, offsetBy: range.length)
             printSpellingError(sentence: sentence, wordRange: start..<end)
         default:
-            abort()
+            break
         }
         
         
