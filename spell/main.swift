@@ -9,6 +9,56 @@
 import Foundation
 import AppKit
 
+func printOrderedList(_ list: [String]) {
+    for i in 0..<list.count {
+        print("\(i+1). \(list[i])")
+    }
+}
+
+func printSpellingError(sentence: String, wordRange: Range<String.Index>) {
+    let misspelledWord = sentence.substring(with: wordRange)
+    let wordNSRange = NSRange(location: 0, length: misspelledWord.characters.count)
+    
+    
+    let checker = NSSpellChecker.shared()
+    let guesses = checker.guesses(forWordRange: wordNSRange,
+                                  in: misspelledWord,
+                                  language: checker.language(),
+                                  inSpellDocumentWithTag: 0) ?? []
+    
+    var description = "word \'\(misspelledWord)\' is misspelled; "
+    
+    if guesses.count == 0 {
+        description += "no suggestions"
+    } else {
+        description += "did you mean \'\(guesses[0])\'"
+    }
+    printColoredMessage("spelling", colorCode: 35, body: description)
+    printUnderline(string: sentence, underline: wordRange, multipleArrows: false)
+}
+
+func printUnderline(string: String, underline: Range<String.Index>, multipleArrows: Bool) {
+    // TODO: Handle long string
+    print(string)
+    var arrows = String(repeating: " ",
+                        count: string.distance(from: string.startIndex,
+                                               to: underline.lowerBound))
+    if multipleArrows {
+        arrows += String(repeating: "^",
+                         count: string.distance(from: underline.lowerBound,
+                                                to: underline.upperBound))
+    } else {
+        arrows += "^"
+    }
+    print(arrows)
+}
+
+func printColoredMessage(_ title: String, colorCode: Int, body: String) {
+    var message = "\u{001B}[\(colorCode)m\(title):\u{001B}[0m "
+    message += body
+    print(message)
+}
+
 func process(word: String, forceSuggestions: Bool) {
     let checker = NSSpellChecker.shared()
     
@@ -29,29 +79,86 @@ func process(word: String, forceSuggestions: Bool) {
         if (guesses.count == 0){
             print("No suggestions")
         } else {
-            for i in 0..<guesses.count {
-                print("\(i+1). \(guesses[i])")
-            }
+            printOrderedList(guesses)
         }
     } else {
         print("No suggestions")
     }
 }
 
+func handleGrammarFeedback(sentence: String, details: [[String : Any]]) {
+    for detail in details {
+        let description = detail[NSGrammarUserDescription] as! String
+        let range = detail[NSGrammarRange] as! NSRange
+        let corrections = detail[NSGrammarCorrections] as? [String]
+        
+        let start = sentence.index(sentence.startIndex, offsetBy: range.location)
+        let end = sentence.index(start, offsetBy: range.length)
+        
+        printColoredMessage("grammar", colorCode: 31, body: description)
+        
+        if corrections != nil {
+            print(String(repeating: " ", count: 9) + "corrections: " + corrections!.joined(separator: ", "))
+        }
+        
+        printUnderline(string: sentence,
+                       underline: start..<end,
+                       multipleArrows: true)
+        
+        
+    }
+}
+
+func process(sentence: String) {
+    let checker = NSSpellChecker.shared()
+    
+    let sentenceRange = NSRange(location: 0, length: sentence.characters.count)
+    
+    let checkingTypes: NSTextCheckingResult.CheckingType = [.spelling, .grammar]
+    
+    let results = checker.check(sentence, range: sentenceRange,
+                                types: checkingTypes.rawValue,
+                                options: nil, inSpellDocumentWithTag: 0, orthography: nil, wordCount: nil)
+
+    if results.count == 0 {
+        print("Correct!")
+        return
+    }
+    
+    for  feedback in results {
+        let range = feedback.range
+        
+        switch feedback.resultType {
+        case NSTextCheckingResult.CheckingType.grammar:
+            handleGrammarFeedback(sentence: sentence, details: feedback.grammarDetails!)
+        case NSTextCheckingResult.CheckingType.spelling:
+            let start = sentence.index(sentence.startIndex, offsetBy: range.location)
+            let end = sentence.index(start, offsetBy: range.length)
+            printSpellingError(sentence: sentence, wordRange: start..<end)
+        default:
+            abort()
+        }
+        
+        
+    }
+    
+}
+
 func processHelp() {
     let checker = NSSpellChecker.shared()
     
-    print("spell - A spell checker for command line")
-    print("It takes exactly one word as its argument.")
+    print("spell - A spell and grammar checker for command line")
+    print("It takes a word or a sentence as its argument.")
     print("")
     print("Example:")
-    print("    spell apple")
+    print("    spell swift")
+    print("    spell I love programming!")
     print("")
     print("language: \(checker.language())")
+    print("version: 0.2")
+    print("")
+    print("Created by Pei Liang Guo")
 }
-
-let server = NSSpellServer()
-server.run()
 
 var arguments = CommandLine.arguments
 arguments.removeFirst()
@@ -74,7 +181,7 @@ case 0:
 case 1:
     process(word: arguments[0], forceSuggestions: forceSuggestions)
 default:
-    processHelp()
+    process(sentence: arguments.joined(separator: " "))
 }
 
 
