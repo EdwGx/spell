@@ -147,7 +147,7 @@ func process(sentence: String) {
 func processHelp() {
     let checker = NSSpellChecker.shared()
     
-    print("spell - A spell and grammar checker for command line")
+    print("spell - A command line tool for spelling and grammar checking")
     print("It takes a word or a sentence as its argument.")
     print("")
     print("Example:")
