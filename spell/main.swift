@@ -155,7 +155,7 @@ func processHelp() {
     print("    spell I love programming!")
     print("")
     print("language: \(checker.language())")
-    print("version: 0.2")
+    print("version: 0.2.1")
     print("")
     print("Created by Pei Liang Guo")
 }
