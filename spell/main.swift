@@ -9,7 +9,7 @@
 import Foundation
 import AppKit
 
-var version = Version(major: 0, minor: 3, tiny: nil)
+var version = Version(major: 0, minor: 3, tiny: 1)
 
 let options = ProgramOptions(arguments: CommandLine.arguments)
 
