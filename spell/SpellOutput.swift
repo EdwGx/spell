@@ -18,7 +18,7 @@ class SpellOutput {
     // Output the positive feedback message
     static func printPositiveFeedback() {
         let randomIndex = Int(arc4random_uniform(UInt32(positiveResponds.count)))
-        print(positiveResponds[randomIndex])
+        print("✓ " + positiveResponds[randomIndex])
     }
     
     // Output a short description of a grammar or spelling correction
