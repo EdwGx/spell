@@ -179,7 +179,8 @@ class HelpController: TextController {
     func render() {
         let checker = NSSpellChecker.shared()
         
-        print("spell - A command line tool for spelling and grammar checking")
+        // Output information about spell
+        print("spell - A command line tool that checks spelling and grammar like a compiler")
         print("It accepts a word or a sentence as its argument.")
         print("")
         print("Example:")
