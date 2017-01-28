@@ -2,7 +2,7 @@
 //  main.swift
 //  spell
 //
-//  Created by Edward Guo on 2017-01-24.
+//  Created by Pei Liang Guo 2017-01-24.
 //  Copyright © 2017 Pei Liang Guo. All rights reserved.
 //
 

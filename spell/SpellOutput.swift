@@ -2,7 +2,7 @@
 //  SpellOutput.swift
 //  spell
 //
-//  Created by Edward Guo on 2017-01-28.
+//  Created by Pei Liang Guo on 2017-01-28.
 //  Copyright © 2017 Pei Liang Guo. All rights reserved.
 //
 
