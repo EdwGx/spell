@@ -37,10 +37,10 @@ class ProgramOptions {
             inputType = .help
         } else if self.arguments.count == 1 {
             inputType = .word
-            inputBody = arguments[0]
+            inputBody = self.arguments[0]
         } else {
             inputType = .sentence
-            inputBody = arguments.joined(separator: " ")
+            inputBody = self.arguments.joined(separator: " ")
         }
     }
     
