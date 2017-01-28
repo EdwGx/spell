@@ -67,7 +67,7 @@ class ProgramOptions {
             
             // If the argument starts with dash, test if it matches with name or shorthand.
             // Otherwise stop searching because the argument is a part of the input body.
-            if argument.hasSuffix("-") {
+            if argument.hasPrefix("-") {
                 if argument == nameArgument || argument == shortHandArgument {
                     // Found the option, remove it from the arguments and and return true
                     arguments.remove(at: index)
