@@ -51,6 +51,11 @@ class ProgramOptions {
     }
     
     func parseOption(name: String, shortHand: String, front: Bool) -> Bool {
+        // Return false because the arguments is empty
+        guard !arguments.isEmpty else {
+            return false
+        }
+        
         // Add dashes to name and shortHand
         let nameArgument = "--\(name)"
         let shortHandArgument = "-\(shortHand)"
@@ -76,8 +81,6 @@ class ProgramOptions {
                 return false
             }
         }
-        
-        // Return false because the arguments is empty
         return false
     }
 }
